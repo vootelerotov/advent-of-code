@@ -4,7 +4,7 @@ import io.github.vootelerotov.util.readResourceLines
 import io.github.vootelerotov.util.split
 
 fun main(){
-  val lines = readResourceLines("day1/input.txt")
+  val lines = readResourceLines("aoc2022/day1/input.txt")
 
   // 1st
   val calorieLists = split(lines, "")
