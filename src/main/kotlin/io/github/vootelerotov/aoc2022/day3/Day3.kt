@@ -5,7 +5,7 @@ import io.github.vootelerotov.util.readResourceLines
 fun main() {
   val lines = readResourceLines("aoc2022/day3/input.txt")
 
-  val rucksacks = lines.map(::parseLine)
+  val rucksacks = lines.map(::parseRucksack)
 
   // 1st
   rucksacks
@@ -27,10 +27,10 @@ fun main() {
 fun allItemsInRucksack(rucksack: Rucksack): List<Item> =
   rucksack.let { (oneCompartment, otherCompartment) -> oneCompartment.items + otherCompartment.items }
 
-fun parseLine(line: String): Rucksack =
-  parseRucksack(line.subSequence(0, line.length/2)) to parseRucksack(line.subSequence(line.length/2, line.length))
+fun parseRucksack(line: String): Rucksack =
+  parseCompartment(line.subSequence(0, line.length/2)) to parseCompartment(line.subSequence(line.length/2, line.length))
 
-fun parseRucksack(rawRucksack: CharSequence): Compartment = Compartment(rawRucksack.map(::parseItem))
+fun parseCompartment(rawRucksack: CharSequence): Compartment = Compartment(rawRucksack.map(::parseItem))
 
 fun parseItem(item: Char): Item = Item(item, if (item.isUpperCase())  item - 'A' + 27 else item - 'a' + 1)
 
