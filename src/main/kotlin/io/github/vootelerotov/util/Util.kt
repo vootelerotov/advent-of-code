@@ -23,3 +23,5 @@ private fun <T> splitInTwo(list: List<T>, separator: T): Pair<List<T>, List<T>> 
       else -> list.subList(0, index) to list.subList(index+1, list.size)
     }
   }
+
+fun <T> head(list: List<T>): Pair<T, List<T>>? = list.firstOrNull()?.let { it to list.drop(1) }
