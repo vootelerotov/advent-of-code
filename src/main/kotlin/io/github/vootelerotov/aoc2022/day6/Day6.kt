@@ -8,7 +8,7 @@ fun main() {
   // 1st
   message.withIndex().windowed(4).first { it.map(::value).let(::isDistinct)}.last().let(::nth).let(::println)
 
-  // 1st
+  // 2nd
   message.withIndex().windowed(14).first { it.map(::value).let(::isDistinct)}.last().let(::nth).let(::println)
 
 }
