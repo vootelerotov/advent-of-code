@@ -28,27 +28,25 @@ fun main() {
   ((sortedPackages.indexOf(firstDivider) + 1) * (sortedPackages.indexOf(secondDivider) + 1)).let(::println)
 }
 
-fun isInOrder(onePackage: Package, otherPackage: Package): Order =
-  when (onePackage) {
-    is Simple -> when (otherPackage) {
-      is Simple -> areSimplePackagesInOrder(onePackage, otherPackage)
-      is Combined -> isInOrder(Combined(onePackage), otherPackage)
-    }
-    is Combined -> when (otherPackage) {
-      is Simple -> isInOrder(onePackage, Combined(otherPackage))
-      is Combined -> areCombinedInOrder(onePackage, otherPackage)
-    }
+fun isInOrder(onePackage: Package, otherPackage: Package): Order = when (onePackage) {
+  is Simple -> when (otherPackage) {
+    is Simple -> areSimplePackagesInOrder(onePackage, otherPackage)
+    is Combined -> isInOrder(Combined(onePackage), otherPackage)
   }
-
-fun areSimplePackagesInOrder(one: Simple, other: Simple): Order {
-  return when {
-    one.value < other.value -> IN_ORDER
-    one.value > other.value -> OUT_OF_ORDER
-    else -> UNDETERMINED
+  is Combined -> when (otherPackage) {
+    is Simple -> isInOrder(onePackage, Combined(otherPackage))
+    is Combined -> areCombinedInOrder(onePackage, otherPackage)
   }
 }
 
-fun areCombinedInOrder(onePackage: Combined, otherPackage: Combined): Order = areCombinedInOrder(onePackage.packages, otherPackage.packages)
+fun areSimplePackagesInOrder(one: Simple, other: Simple): Order = when {
+  one.value < other.value -> IN_ORDER
+  one.value > other.value -> OUT_OF_ORDER
+  else -> UNDETERMINED
+}
+
+fun areCombinedInOrder(onePackage: Combined, otherPackage: Combined): Order =
+  areCombinedInOrder(onePackage.packages, otherPackage.packages)
 
 fun areCombinedInOrder(one: List<Package>, other: List<Package>): Order = when {
   one.isEmpty() && other.isEmpty() -> UNDETERMINED
@@ -61,17 +59,16 @@ fun areCombinedInOrder(one: List<Package>, other: List<Package>): Order = when {
 
 private fun parsePackage(one: String) = parsePackages(one).single()
 
-fun parsePackages(string: String): List<Package>  =
-  head(string)?.let { (head, tail) ->
-    when (head) {
-      '[' -> takeUntilClosingBracket(tail).let { (packageString, rest) ->
-        listOf(Combined(parsePackages(packageString))) + parsePackages(rest)
-      }
-      ']' -> emptyList()
-      ',' -> parsePackages(tail)
-      else -> takeDigits(string).let{ (digits, rest) -> listOf(Simple(digits.toInt())) + parsePackages(rest)}
+fun parsePackages(string: String): List<Package> = head(string)?.let { (head, tail) ->
+  when (head) {
+    '[' -> takeUntilClosingBracket(tail).let { (packageString, rest) ->
+      listOf(Combined(parsePackages(packageString))) + parsePackages(rest)
     }
-  } ?: emptyList()
+    ']' -> emptyList()
+    ',' -> parsePackages(tail)
+    else -> takeDigits(string).let{ (digits, rest) -> listOf(Simple(digits.toInt())) + parsePackages(rest)}
+  }
+} ?: emptyList()
 
 fun takeDigits(rawPackage: String): Pair<String, String> = head(rawPackage)?.let { (head, tail) ->
   when (head) {
