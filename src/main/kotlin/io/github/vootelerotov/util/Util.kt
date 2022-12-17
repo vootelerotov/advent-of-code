@@ -26,6 +26,8 @@ private fun <T> splitInTwo(list: List<T>, separator: T): Pair<List<T>, List<T>> 
 
 fun <T> head(list: List<T>): Pair<T, List<T>>? = list.firstOrNull()?.let { it to list.drop(1) }
 
+fun head(str: String): Pair<Char, String>? = str.firstOrNull()?.let { it to str.substring(1) }
+
 fun <T> transpose(matrix: List<List<T>>) : List<List<T>> =
   if (matrix.all { it.isEmpty() })
     listOf()
